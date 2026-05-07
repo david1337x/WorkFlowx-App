@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WorkFlowx — To Do App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Loader -->
+  <div id="loader" class="loader">
+    <div class="loader-inner">
+      <div class="loader-logo">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <rect x="4" y="4" width="18" height="18" rx="4" fill="url(#lg1)"/>
+          <rect x="26" y="4" width="18" height="18" rx="4" fill="url(#lg2)" opacity="0.6"/>
+          <rect x="4" y="26" width="18" height="18" rx="4" fill="url(#lg3)" opacity="0.6"/>
+          <rect x="26" y="26" width="18" height="18" rx="4" fill="url(#lg4)"/>
+          <defs>
+            <linearGradient id="lg1" x1="4" y1="4" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#7c3aed"/>
+              <stop offset="1" stop-color="#a78bfa"/>
+            </linearGradient>
+            <linearGradient id="lg2" x1="26" y1="4" x2="44" y2="22" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#6d28d9"/>
+              <stop offset="1" stop-color="#8b5cf6"/>
+            </linearGradient>
+            <linearGradient id="lg3" x1="4" y1="26" x2="22" y2="44" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#5b21b6"/>
+              <stop offset="1" stop-color="#7c3aed"/>
+            </linearGradient>
+            <linearGradient id="lg4" x1="26" y1="26" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#a78bfa"/>
+              <stop offset="1" stop-color="#c4b5fd"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <div class="loader-wordmark">WorkFlowx</div>
+      <div class="loader-bar-track"><div class="loader-bar"></div></div>
+      <div class="loader-status">Initializing workspace…</div>
+    </div>
+  </div>
+
+  <!-- Cursor glow -->
+  <div id="cursor-glow" class="cursor-glow"></div>
+
+  <!-- Ambient background -->
+  <div class="bg-canvas">
+    <canvas id="particle-canvas"></canvas>
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+    <div class="gradient-orb orb-3"></div>
+    <div class="noise-overlay"></div>
+  </div>
+
+  <!-- App Shell -->
+  <div id="app" class="app hidden">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="logo-mark">
+          <svg width="28" height="28" viewBox="0 0 48 48" fill="none">
+            <rect x="4" y="4" width="18" height="18" rx="4" fill="url(#hg1)"/>
+            <rect x="26" y="4" width="18" height="18" rx="4" fill="url(#hg2)" opacity="0.7"/>
+            <rect x="4" y="26" width="18" height="18" rx="4" fill="url(#hg3)" opacity="0.7"/>
+            <rect x="26" y="26" width="18" height="18" rx="4" fill="url(#hg4)"/>
+            <defs>
+              <linearGradient id="hg1" x1="4" y1="4" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#7c3aed"/><stop offset="1" stop-color="#a78bfa"/>
+              </linearGradient>
+              <linearGradient id="hg2" x1="26" y1="4" x2="44" y2="22" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#6d28d9"/><stop offset="1" stop-color="#8b5cf6"/>
+              </linearGradient>
+              <linearGradient id="hg3" x1="4" y1="26" x2="22" y2="44" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#5b21b6"/><stop offset="1" stop-color="#7c3aed"/>
+              </linearGradient>
+              <linearGradient id="hg4" x1="26" y1="26" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#a78bfa"/><stop offset="1" stop-color="#c4b5fd"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <span class="wordmark">WorkFlowx</span>
+        <span class="wordmark-tag">Task Manager</span>
+      </div>
+      <div class="header-right">
+        <div class="header-date" id="header-date"></div>
+        <button class="icon-btn sound-toggle" id="sound-toggle" title="Toggle Sound (S)">
+          <svg id="sound-icon-on" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+          </svg>
+          <svg id="sound-icon-off" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Stats Bar -->
+    <section class="stats-bar" id="stats-bar">
+      <div class="stat-card" id="stat-total">
+        <div class="stat-value" id="stat-total-val">0</div>
+        <div class="stat-label">Total</div>
+        <div class="stat-glow"></div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-card" id="stat-active">
+        <div class="stat-value" id="stat-active-val">0</div>
+        <div class="stat-label">Active</div>
+        <div class="stat-glow"></div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-card" id="stat-done">
+        <div class="stat-value" id="stat-done-val">0</div>
+        <div class="stat-label">Completed</div>
+        <div class="stat-glow"></div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-card" id="stat-progress">
+        <div class="stat-value" id="stat-pct-val">0%</div>
+        <div class="stat-label">Progress</div>
+        <div class="stat-glow"></div>
+      </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+      <!-- Input Area -->
+      <div class="input-panel glass-card">
+        <div class="input-wrapper">
+          <div class="input-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+          </div>
+          <input
+            id="task-input"
+            class="task-input"
+            type="text"
+            placeholder="Add a new task… (Enter to save)"
+            maxlength="200"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <div class="input-char-count" id="input-char-count">0/200</div>
+          <button class="add-btn" id="add-btn" title="Add Task (Enter)">
+            <span class="add-btn-text">Add</span>
+            <div class="add-btn-ripple"></div>
+          </button>
+        </div>
+        <div class="input-shortcuts">
+          <kbd>Enter</kbd><span>Add task</span>
+          <kbd>Esc</kbd><span>Clear</span>
+          <kbd>S</kbd><span>Sound</span>
+          <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><span>Filter</span>
+        </div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <div class="filter-tabs">
+          <button class="filter-tab active" data-filter="all" id="filter-all">
+            <span class="tab-label">All</span>
+            <span class="tab-count" id="tab-count-all">0</span>
+          </button>
+          <button class="filter-tab" data-filter="active" id="filter-active">
+            <span class="tab-label">Active</span>
+            <span class="tab-count" id="tab-count-active">0</span>
+          </button>
+          <button class="filter-tab" data-filter="completed" id="filter-completed">
+            <span class="tab-label">Completed</span>
+            <span class="tab-count" id="tab-count-completed">0</span>
+          </button>
+          <div class="tab-indicator" id="tab-indicator"></div>
+        </div>
+        <div class="filter-actions">
+          <button class="ghost-btn" id="clear-completed" title="Clear all completed tasks">
+            Clear done
+          </button>
+        </div>
+      </div>
+
+      <!-- Task List -->
+      <div class="task-list-container">
+        <ul class="task-list" id="task-list" role="list"></ul>
+
+        <!-- Empty State -->
+        <div class="empty-state hidden" id="empty-state">
+          <div class="empty-illustration">
+            <div class="empty-ring ring-1"></div>
+            <div class="empty-ring ring-2"></div>
+            <div class="empty-ring ring-3"></div>
+            <div class="empty-icon-wrap">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M9 11l3 3L22 4"/>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+              </svg>
+            </div>
+          </div>
+          <h3 class="empty-title" id="empty-title">No tasks yet</h3>
+          <p class="empty-sub" id="empty-sub">Add your first task above to get started</p>
+        </div>
+      </div>
+
+      <!-- Progress Track -->
+      <div class="progress-section" id="progress-section">
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill"></div>
+          <div class="progress-shine"></div>
+        </div>
+        <div class="progress-label" id="progress-label">0 of 0 completed</div>
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <span>Workflowx Task Manager</span>
+      <span class="footer-sep">·</span>
+      <p className='text-sm text-second font-poppins font-light'>2026 David. All Rights Reserved.</p>
+      <span class="footer-sep">·</span>
+      <a class="footer-link" id="export-link" href="#" download="nexus-tasks.json">Export tasks</a>
+    </footer>
+
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="modal-backdrop hidden" id="modal-backdrop">
+    <div class="modal glass-card" id="edit-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-title">Edit Task</h2>
+        <button class="icon-btn modal-close" id="modal-close" aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <textarea id="edit-input" class="edit-textarea" maxlength="200" rows="4" spellcheck="false"></textarea>
+      <div class="modal-footer">
+        <button class="ghost-btn" id="modal-cancel">Cancel</button>
+        <button class="add-btn" id="modal-save">
+          <span>Save changes</span>
+          <div class="add-btn-ripple"></div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
